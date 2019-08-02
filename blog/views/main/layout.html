@@ -42,11 +42,17 @@
         <div class="col-md-8">
           {% block content %}{% endblock %}
         </div>
-        <div class="col-md-4 hidden-xs hidden-sm">
-          <!-- 个人中心 -->
-          <div class="user-panel" id='user-info' style="display: none;">
-            欢迎<span>Tom</span>
+         <div class="col-md-4 hidden-xs hidden-sm">
+          <!--用户注册登录-->
+          <!-- 设置cookies {% if userInfo._id %}   {% else %}  {% endif %}-->
+          {% if userInfo._id %}
+          <div class="user-panel" id='user-info'><!-- 去掉display:none -->
+            欢迎<span>{{userInfo.username}}</span>
+            {% if userInfo.isAdmin %}
+            <a class="link" href="/admin">进入管理中心</a>
+            {% else %}
             <a class="link" href="/home">进入个人中心</a>
+            {% endif %}
             <a class="link" href="javascript:;" id='logout'>退出</a>
             <div class="form-group">
               <div class="col-sm-12">
@@ -54,7 +60,7 @@
               </div>
             </div>              
           </div>
-          <!-- 用户注册 -->
+          {% else %}
           <div class="form-horizontal user-panel" id='register' style="display: none;">
             <div class="form-group">
               <label class="col-sm-4 control-label">用户名</label>
@@ -86,7 +92,7 @@
               </div>
             </div>            
           </div> 
-          <!--用户登录-->
+
           <div class="form-horizontal user-panel" id='login'>
             <div class="form-group">
               <label class="col-sm-4 control-label">用户名</label>
@@ -112,6 +118,8 @@
               </div>
             </div>            
           </div>
+          {% endif %}
+          <!--用户注册登录--> 
 
           <div class="ad">
             <a href="#" class="thumbnail">
@@ -179,5 +187,4 @@
 <script src="js/common.js"></script>
 {% block footer %}{% endblock %}
 </body>
-
 </html>
