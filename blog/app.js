@@ -1,15 +1,6 @@
 
 const swig = require('swig')
 const express = require('express')
-//引入cookies库
-const Cookies = require('cookies')
-
-//引入express-session库
-const session = require('express-session')
-
-//将session存储起来
-const MongoStore = require("connect-mongo")(session)
-
 const app = express()
 const port = 3000
 
@@ -52,8 +43,11 @@ app.set('views', './views')
 
 //注册模板引擎
 app.set('view engine', 'html')
-//设置cookie中间件
+
 /*
+//设置cookie中间件
+//引入cookies库
+const Cookies = require('cookies')
 //处理cookie
 app.use((req,res,next)=>{
     //生成cookies对象并且保存到req对象上
@@ -67,6 +61,12 @@ app.use((req,res,next)=>{
 })
 */
 
+
+//引入express-session库
+const session = require('express-session')
+
+//将session存储起来
+const MongoStore = require("connect-mongo")(session)
 
 // 设置session中间件
 app.use(session({
@@ -87,6 +87,8 @@ app.use(session({
     store:new MongoStore({ mongooseConnection: mongoose.connection })   
     
 }))
+
+//设置userInfo
 app.use((req,res,next)=>{   
     req.userInfo = req.session.userInfo || {}
     next()

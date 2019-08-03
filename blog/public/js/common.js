@@ -55,10 +55,13 @@
                 dateType:'json',
                 data:{
                     username:username,
-                    password:password
+                    password:password, 
                 }
             })
+            //注册成功
             .done(function(result){
+                console.log(result)
+                //根据状态码判断注册成功还是失败
                 if(result.status == 0){
                     $('#go-login').trigger('click')
                 }else{
@@ -104,8 +107,10 @@
                     password:password
                 }
             })
+            //result接收res.json中传入的数据
             .done(function(result){
                 if(result.status == 0){
+                    console.log(result)
                     /*
                     //如果不刷新则不会显示登陆框
                     $login.hide()

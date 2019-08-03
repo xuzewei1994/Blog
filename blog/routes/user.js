@@ -8,10 +8,8 @@ const UserModel = require('../models/user.js')
 
 //注册
 router.post('/register',(req,res)=>{
-    console.log(req.cookies)
     //1.获取参数
     const { username,password } = req.body
-    console.log(req.body)
 
     //2.同名验证
     UserModel.findOne({username:username})
@@ -29,7 +27,7 @@ router.post('/register',(req,res)=>{
             UserModel.insertMany({
                 username:username,
                 password:hmac(password),
-                // isAdmin:true
+                isAdmin:true
             })
             .then(user=>{
                 res.json({
@@ -57,17 +55,13 @@ router.post('/login',(req,res)=>{
     //1.获取参数
      const { username,password } = req.body
     //2.验证
-    UserModel.findOne({username:username,password:hmac(password)},'-password -v')
+    UserModel.findOne({username:username,password:hmac(password)},'-password -__v')
     .then(user=>{
         //验证成功
-        if(user){
-            /*
-            //生成cookies并且返回给前台
-            //cookies.set（name，[value]，[options]）
-            //req.cookies.set('userInfo',JSON.stringify(user),{maxAge:1000000})
-            */
+        if(user){     
             //添加session
             req.session.userInfo = user
+            
             res.json({
                 status:0,
                 message:"注册成功",
@@ -91,14 +85,13 @@ router.post('/login',(req,res)=>{
     })
 })
 
-//推出登陆
+//退出登陆
 router.get('/logout',(req,res)=>{
-    // req.cookies.set('userInfo',null)
     req.session.destroy()
     res.json({
             status:0,
             message:"退出登陆成功"
-        }) 
+    }) 
 })
 
 module.exports = router
