@@ -1,27 +1,6 @@
-
-const express = require('express')
-const UserModel = require('../models/user.js')
-
-const router = express.Router()
-//权限验证
-router.use((req,res,next)=>{
-    if(req.userInfo.isAdmin){
-        next()
-    }else{
-        res.send('<h1>请用管理员账号登录</h1>')
-    }
-})
-
-//显示后台管理首页
-router.get('/', (req, res) => {
-    res.render("admin/index",{
-        userInfo:req.userInfo
-    })
-})
-//显示用户列表
-router.get('/users', (req,res) => {
-/*
-    分页分析:
+async function pagination(options){
+	/*
+	分页分析:
     前提条件:得知道获取第几页,前端发送参数 page
     约定:每一页显示多少条数据, 约定每页显示2条, limit = 2
     举例:
@@ -38,7 +17,7 @@ router.get('/users', (req,res) => {
     第 page 页, 跳过 (page-1)*limit 条
 
  */
-    let page = req.query.page
+    let {page,model,query,sort,projection } = options
     const limit = 2
     page = parseInt(page)
     
@@ -51,21 +30,36 @@ router.get('/users', (req,res) => {
         page = 1
     }
 
-    UserModel.countDocuments((err,count)=>{
+    const count = await model.countDocuments()
+
+
         //总页数
         const pages = Math.ceil(count / limit)
+
         //下一页边界值控制
         if(page > pages){
             page = pages
         }
+
         //生成页码数组
         const list = []
         for(let i = 1;i<=pages;i++){
             list.push(i)
         }
+
         const skip = (page-1)*limit
 
-        UserModel.find({})
+        const docs = model.find(query)
+
+        return {
+        	docs:docs,
+        	page:page,
+        	list:list,
+        	pages:pages
+        }
+
+        UserModel.find({},"-password -__v")
+        .sort({_id:-1})
         .skip(skip)
         .limit(limit)
         .then(users=>{
@@ -79,8 +73,6 @@ router.get('/users', (req,res) => {
         .catch(err=>{
            console.log('get users err:',err) 
         })
-    })
-})
 
 
-module.exports = router
+}
