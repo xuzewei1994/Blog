@@ -23,19 +23,29 @@
                 {% else %}
                     否
                 {% endif %}
+
           </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
 </div>
+<!--
 <nav aria-label="Page navigation">
   <ul class="pagination">
+    {% if page == 1 %}
+    <li class="disabled">
+      <a href="javascript:;" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {% else %}
     <li>
       <a href="/admin/users?page={{ page - 1 }}" aria-label="Previous">
         <span aria-hidden="true">&laquo;</span>
       </a>
-    </li>
+    </li>    
+    {% endif %}    
     {% for i in list %}
     {% if i == page %}
     <li class="active"><a href="javascript:;">{{i}}</a></li>
@@ -43,11 +53,22 @@
     <li><a href="/admin/users?page={{i}}">{{i}}</a></li>
     {% endif %}
     {% endfor %}
-    <li>
+    {% if page ==  pages %}
+    <li class="disabled">
+      <a href="javascript:;" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>       
+    {% else %}
+     <li>
       <a href="/admin/users?page={{ page + 1 }}" aria-label="Next">
         <span aria-hidden="true">&raquo;</span>
       </a>
     </li>
+    {% endif %}    
   </ul>
 </nav>
+-->
+{% include "./pagination.html" %}
+
 {% endblock %}

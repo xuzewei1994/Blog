@@ -6,6 +6,6 @@
 */
 ;(function($){
 	$('.carousel').carousel({
-	  interval: 20000
+	  interval: 2000
 	})
 })(jQuery);

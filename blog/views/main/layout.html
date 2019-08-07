@@ -7,8 +7,8 @@
   <title>
     {% block title %}{% endblock %}
   </title>
-  <link rel="stylesheet" href="lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="/lib/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/common.css">
   {% block head %}{% endblock %}
 </head>
 <body>
@@ -28,10 +28,9 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
           <li class="active"><a href="index.html">首页<span class="sr-only">(current)</span></a></li>
-          <li><a href="list.html">HTML/CSS</a></li>
-          <li><a href="list.html">JavaScript</a></li>
-          <li><a href="list.html">学无止境</a></li>
-          <li><a href="list.html">我的足迹</a></li>
+          {% for category in categories %}
+          <li><a href="list.html">{{ category.name }}</a></li>
+          {% endfor %}
         </ul>
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container -->
@@ -42,19 +41,16 @@
         <div class="col-md-8">
           {% block content %}{% endblock %}
         </div>
-         <div class="col-md-4 hidden-xs hidden-sm">
+        <div class="col-md-4 hidden-xs hidden-sm">
           <!--用户注册登录-->
-          <!-- 设置cookies {% if userInfo._id %}   {% else %}  {% endif %}-->
           {% if userInfo._id %}
-          <div class="user-panel" id='user-info'><!-- 去掉display:none -->
-            欢迎<span>{{userInfo.username}}</span>
-
+          <div class="user-panel" id='user-info'>
+            欢迎<span>{{ userInfo.username }}</span>
             {% if userInfo.isAdmin %}
             <a class="link" href="/admin">进入管理中心</a>
             {% else %}
             <a class="link" href="/home">进入个人中心</a>
             {% endif %}
-            
             <a class="link" href="javascript:;" id='logout'>退出</a>
             <div class="form-group">
               <div class="col-sm-12">
@@ -157,14 +153,9 @@
             </div>
             <div class="panel-body">
               <ul class="list-group">
-                <li class="list-group-item"><a href="detail.html" class="link text-ellipsis" target="_blank">Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</a></li>
-                <li class="list-group-item"><a href="detail.html" class="link text-ellipsis" target="_blank">Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</a></li>
-                <li class="list-group-item"><a href="detail.html" class="link text-ellipsis" target="_blank">Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</a></li>
-                <li class="list-group-item"><a href="detail.html" class="link text-ellipsis" target="_blank">Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</a></li>
-                <li class="list-group-item"><a href="detail.html" class="link text-ellipsis" target="_blank">Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</a></li>
-                <li class="list-group-item"><a href="detail.html" class="link text-ellipsis" target="_blank">Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</a></li>
-                <li class="list-group-item"><a href="detail.html" class="link text-ellipsis" target="_blank">Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</a></li>
-                <li class="list-group-item"><a href="detail.html" class="link text-ellipsis" target="_blank">Cras justo odioCras justo odioCras justo odioCras justo odioCras justo odio</a></li>                                                 
+                {% for  article in  topArticles %}
+                <li class="list-group-item"><a href="/detail/{{article._id.toString()}}" class="link text-ellipsis" target="_blank">[{{ article.click }}]{{article.title}}</a></li>
+                {% endfor %}
               </ul>     
             </div>
           </div>
@@ -184,10 +175,13 @@
     Blog Design by <a href="#">Kuazhu</a> <a href="#">豫ICP备11002373号-1</a>.
   </footer>
 
-<script src="lib/jquery/jquery-1.12.4.min.js"></script> 
-<script src="lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
-<script src="js/common.js"></script>
-<script src="js/logout"></script>
+<script src="/lib/jquery/jquery-1.12.4.min.js"></script> 
+<script src="/lib/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script src="/lib/moment/moment.js"></script>
+<script src="/js/pagination.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/logout.js"></script>
 {% block footer %}{% endblock %}
 </body>
+
 </html>
