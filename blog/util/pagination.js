@@ -26,7 +26,7 @@ async function pagination(options){
         page = 1
     }
 
-    const count = await model.countDocuments()
+    const count = await model.countDocuments(query)
     
     //总页数
     const pages = Math.ceil(count / limit)

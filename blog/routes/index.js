@@ -1,5 +1,9 @@
-
-
+/*
+* @Author: TomChen
+* @Date:   2019-08-01 15:30:57
+* @Last Modified by:   TomChen
+* @Last Modified time: 2019-08-07 16:59:52
+*/
 const express = require('express')
 const CategoryModel = require('../models/category.js')
 const ArticleModel = require('../models/article.js')
@@ -37,15 +41,18 @@ router.get('/', (req, res) => {
                 page:data.page,
                 list:data.list,
                 pages:data.pages,
-                url:"/"
             })
         })
     })
 })
-
 //处理文章分页数据的ajax请求
 router.get('/articles', (req, res) => {
-    ArticleModel.getPaginationArticlesData(req)
+    const id = req.query.id
+    const query = {}
+    if(id){
+        query.category = id
+    }
+    ArticleModel.getPaginationArticlesData(req,query)
     .then(data=>{
         res.json({
             status:0,
@@ -63,18 +70,64 @@ router.get('/articles', (req, res) => {
 
 
 //显示列表页
-router.get('/list', (req, res) => {  
-    res.render("main/list",{
-        userInfo:req.userInfo
-    })
+router.get('/list/:id', (req, res) => {
+    const id = req.params.id
+    getCommonData()
+    .then(data=>{
+        const { categories,topArticles } = data
+        ArticleModel.getPaginationArticlesData(req,{category:id})
+        .then(data=>{
+            res.render("main/list",{
+                userInfo:req.userInfo,
+                categories,
+                topArticles,
+                //首页文章分页数据
+                articles:data.docs,
+                page:data.page,
+                list:data.list,
+                pages:data.pages,
+                //回传分类id
+                currentCategoryId:id
+            })
+        })
+    })    
 })
 
+async function getDetailData(req){
+    
+    const id = req.params.id
+
+    const commonDataPromise = getCommonData()
+    const articlePromise = ArticleModel.findOneAndUpdate({_id:id},{$inc:{click:1}},{new:true})
+                               .populate({path: 'user', select: 'username' })
+                               .populate({path: 'category', select: 'name'})
+    
+    const commonData = await commonDataPromise
+    const article = await articlePromise
+    
+    const { categories,topArticles } = commonData
+    
+    return {
+        categories,
+        topArticles,
+        article
+    }
+}
 
 //显示详情页
-router.get('/detail', (req, res) => {
-    res.render("main/detail",{
-        userInfo:req.userInfo
+router.get('/detail/:id', (req, res) => {
+    getDetailData(req)
+    .then(data=>{
+        const {categories,topArticles,article } = data
+        res.render("main/detail",{
+            userInfo:req.userInfo,
+            categories,
+            topArticles,
+            article,
+            currentCategoryId:article.category._id
+        })        
     })
+
 })
 
 module.exports = router

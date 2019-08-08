@@ -149,10 +149,48 @@
         })    
         return html;
     }
+    function buildPaginationHtml(page,pages,list){
+        var html = ''
+        if(page == 1){
+            html += '<li class="disabled">'
+        }else{
+            html += '<li>'
+        }
+        html += `
+                <a href="javascript:;" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>`
+        list.forEach(function(i){
+            if(i == page){
+                html += '<li class="active">'
+            }else{
+                html += '<li>'
+            }
+            html += '<a href="javascript:;">'+i+'</a></li>'
+        })   
+
+        if(page == pages){
+            html += '<li class="disabled">'
+        }else{
+            html += '<li>'
+        }
+        html += `<a href="javascript:;" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>`
+        return html
+    }
     $articlePage.on('get-data',function(ev,data){
-        console.log(data.docs)
         //构建文章html
         $('#article-wrap').html(buildArticleHtml(data.docs))
+        //构建分页器html
+        $pagination = $articlePage.find('.pagination')
+        if(data.pages > 1){
+            $pagination.html(buildPaginationHtml(data.page,data.pages,data.list))
+        }else{
+            $pagination.html('')
+        }
     })
     $articlePage.pagination({
         url:'/articles'    
